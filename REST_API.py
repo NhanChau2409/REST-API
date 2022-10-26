@@ -1,7 +1,9 @@
-from flask import Flask, request, jsonify
-from flask_marshmallow import Marshmallow
+from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, Integer, String, Float
 import os
+from flask_marshmallow import Marshmallow
+from marshmallow import Schema
 
 # Init app
 app = Flask(__name__)
@@ -17,12 +19,11 @@ db = SQLAlchemy(app)
 
 # Database Model
 class Employee(db.Model):
-    id = db.Column(db.Integer, primary_key =True)
-    name = db.Column(db.String(20), nullable =False)
-    salary = db.Column(db.Integer, nullable =False)
+    id = Column(Integer, primary_key =True)
+    name = Column(String(20), nullable =False)
+    salary = Column(Integer, nullable =False)
     
-    def __init__(self, id, name, salary):
-        self.id = id
+    def __init__(self, name, salary):
         self.name = name
         self.salary = salary
 
@@ -32,7 +33,7 @@ with app.app_context():
 # Innit Marshmallow schema 
 ma = Marshmallow(app)
 
-class EmployeeSchema(ma.Schema):
+class EmployeeSchema(Schema):
     class Meta:
         fields = ('id', 'name', 'salary')
 
@@ -46,26 +47,26 @@ def add_employee():
     name = request.json['name']
     salary = request.json['salary']
     
-    new_employee = Employee(id, name, salary)
+    new_employee = Employee(name, salary)
     
     db.session.add(new_employee)
     db.session.commit()
     
-    return employee_schema.jsonify(new_employee)
+    return jsonify(employee_schema.dump(new_employee))
 
-@app.route('/employee', methods=['GET'])
+@app.route('/employee', methods=['GET']) 
 def get_all_employee():
-    all_employee = db.query.all()
+    all_employee = Employee.query.all()
     return jsonify(employees_schema.dump(all_employee))
 
 @app.route('/employee/<id>', methods=['GET'])
 def get_single_employee(id):
-    single_employee = db.query(id)
-    return employee_schema.jsonify(single_employee)
+    single_employee = Employee.query.get(id)
+    return jsonify(employee_schema.dump(single_employee))
 
-@app.route('/employee/uppdate/<id>', methods=['PUT'])
+@app.route('/employee/update/<id>', methods=['PUT'])
 def get_update_employee(id):
-    update_employee = db.query(id)
+    update_employee = Employee.query.get(id)
     
     name = request.json['name']
     salary = request.json['salary']
@@ -75,16 +76,16 @@ def get_update_employee(id):
     
     db.session.commit()
     
-    return employee_schema.jsonify(update_employee)
+    return jsonify(employee_schema.dump(update_employee))
 
-@app.route('/employee/delete/<id>', methods=['GET'])
+@app.route('/employee/delete/<id>', methods=['DELETE'])
 def get_delete_employee(id):
-    delete_employee = db.query(id)
+    delete_employee = Employee.query.get(id)
     
     db.session.delete(delete_employee)
     db.session.commit()
     
-    return employee_schema.jsonify(delete_employee)
+    return jsonify(employee_schema.dump(delete_employee))
 
 
 if __name__ == "__main__":
