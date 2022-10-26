@@ -42,7 +42,7 @@ employees_schema = EmployeeSchema(many=True)
 # Add employee
 @app.route('/add_employee', methods=['POST'])
 def add_employee():
-    id = request.json['id']
+    
     name = request.json['name']
     salary = request.json['salary']
     
@@ -61,7 +61,31 @@ def get_all_employee():
 @app.route('/employee/<id>', methods=['GET'])
 def get_single_employee(id):
     single_employee = db.query(id)
-    return employee_schema.dump(single_employee)
+    return employee_schema.jsonify(single_employee)
+
+@app.route('/employee/uppdate/<id>', methods=['PUT'])
+def get_update_employee(id):
+    update_employee = db.query(id)
+    
+    name = request.json['name']
+    salary = request.json['salary']
+    
+    update_employee.name = name
+    update_employee.salary = salary
+    
+    db.session.commit()
+    
+    return employee_schema.jsonify(update_employee)
+
+@app.route('/employee/delete/<id>', methods=['GET'])
+def get_delete_employee(id):
+    delete_employee = db.query(id)
+    
+    db.session.delete(delete_employee)
+    db.session.commit()
+    
+    return employee_schema.jsonify(delete_employee)
+
 
 if __name__ == "__main__":
     app.run()
