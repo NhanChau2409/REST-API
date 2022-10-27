@@ -1,6 +1,6 @@
 # REST API 
 
-It is a simple API web with Python for ogarnizing employee salary 
+It is a simple API web with Python for ogarnizing employee salary run on local databse
 
 **Description**:
 
