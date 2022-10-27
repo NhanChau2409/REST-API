@@ -55,8 +55,8 @@ Using a small database to store data about employee - name, salary. Then arrange
 
 ## References
 
-[**Flask**]("https://flask.palletsprojects.com/en/2.2.x/quickstart/")
+**Flask** https://flask.palletsprojects.com/en/2.2.x/quickstart/
 
-[**Flask-Marshamllow**]("https://flask-marshmallow.readthedocs.io/en/stable/")
+**Flask-Marshamllow** https://flask-marshmallow.readthedocs.io/en/stable/
 
-[**Flask-SQLAlchemy**]("https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/")
+**Flask-SQLAlchemy** https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/
